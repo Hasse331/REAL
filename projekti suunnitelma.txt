@@ -1,0 +1,32 @@
+
+idea: Simppeli single page "some" tyylinen sivusto (single page teknisesti ja pääosin visuaalisesti)
+
+Tarkoitus: Harjoitella erityisesti lisää tietokaintoja ja next.js/reactia sekä yhdistää fastAPI web applikaatioon (koska python ja fastAPI on muuten valmiiksi tuttuja)
+
+rakenne / infra:
+
+Modulaarinen aplikaatio rakenne Dockeria käyttäen:
+
+frontend -> Next.js, typescript
+backend -> API pyhonilla ja fastAPI:lla
+MongoDB -> Muulle datalle, mikä vaatii joustavuutta
+PostgreSQL -> arkaluontoisemmalle datalle
+
+
+Ominaisuudet:
+
+Rekisteröityminen -> postrgre
+Kirjatuminen -> postrgre
+Postauksien tekeminen -> mongoDB
+Infinite scroll
+Sisällön filtteröinti
+-> lisää ominaisuuksia jos aikaa riittää
+
+Stackki:
+
+Typescript
+Python
+MongoDB
+PostgreSQL
+Docker, docker-compose ( ja muut työkalut, jos tarpeen)
+Azure/AWS tms

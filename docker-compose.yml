@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+  frontend:
+    build:
+      context: ./frontend/real
+      dockerfile: Dockerfile
+      ports:
+        - "3000:3000"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/usr/src/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - mongodb
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres_testing_DB
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./databases/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongo_testing_DB
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - ./databases/mongoDB:/data/db
+    ports:
+      - "27017:27017"

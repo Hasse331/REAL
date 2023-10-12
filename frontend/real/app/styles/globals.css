@@ -1,0 +1,30 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* Write your global styles here */
+body {
+  @apply bg-neutral-50 text-gray-700;
+}
+
+h1 {
+  @apply my-4 text-center text-3xl font-bold;
+}
+
+p {
+  @apply my-2 text-lg;
+}
+
+button {
+  @apply rounded  bg-violet-700 px-3 py-1 font-bold text-white shadow shadow-black hover:bg-violet-950;
+}
+
+@media (min-width: 1024px) {
+  body {
+    margin-left: 18rem; /* adjust to your preferred margin */
+    margin-right: 18rem; /* adjust to your preferred margin */
+  }
+  .right-nav-btn {
+    right: 18rem;
+  }
+}
