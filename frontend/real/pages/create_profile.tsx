@@ -1,7 +1,7 @@
 // pages/UploadPage.js
 import "../app/styles/globals.css";
 import Layout from "../app/components/layout";
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 
 const UploadPage = () => {
@@ -24,8 +24,10 @@ const UploadPage = () => {
       <Layout />
 
       <div className="p-6 max-w-md mx-auto bg-white rounded-xl shadow-md space-y-4">
-        <Link href="./">🡨 Return</Link>
-        <h1 text-start>New Post</h1>
+        <Link href="./">
+          <a>🡨 Return</a>
+        </Link>
+        <h1>New Post</h1>
         <div className="space-y-2">
           <label className="block text-violet-700">Upload Image</label>
           <input

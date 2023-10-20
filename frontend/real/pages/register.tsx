@@ -1,63 +1,80 @@
 import "../app/styles/globals.css";
 import Layout from "../app/components/layout";
-import Link from "next/link";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import ReturnBtn from "@/app/components/buttons/return-button";
+import { postFormData } from "@/app/utils/api";
+import GetJwtToken from "@/app/utils/get_jwt";
+import useLoginCheck from "@/app/utils/check_jwt";
+import { useEffect } from "react";
 
 function Register() {
   const [responseMessage, setResponseMessage] = useState("");
   const [responseStatus, setResponseStatus] = useState("");
   const router = useRouter();
+  const loggedIn = useLoginCheck();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    const token = GetJwtToken(loggedIn);
+    if (token) {
+      alert("You have already registered and logged in!");
+      router.push("/");
+      return;
+    }
+  });
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    const token = GetJwtToken(loggedIn);
+    if (token) {
+      setResponseMessage("You have already registered and logged in!");
+      return;
+    }
     const formData = new FormData(e.currentTarget);
-    const dataObject: { [key: string]: any } = {};
-    formData.forEach((value, key) => {
-      dataObject[key] = value;
-    });
+    const apiEndpoint =
+      process.env.NEXT_PUBLIC_REGISTER_API_ENDPOINT || "ENV_VARIABLE_NOT_FOUND";
 
-    const apiEndpoint = process.env.NEXT_PUBLIC_REGISTER_API_ENDPOINT;
-    fetch(apiEndpoint || "ENV_VARIABLE_NOT_FOUND", {
-      method: "POST",
-      body: JSON.stringify(dataObject),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setResponseMessage(data.message);
-        if (data.success === true) {
-          setResponseStatus("success");
-          router.push("/login");
-        } else {
-          setResponseStatus("error");
-        }
-      })
-      .catch(() => {
-        setResponseMessage("An error occurred while registering.");
+    interface RegisterResponse {
+      message: string;
+      success: boolean;
+    }
+
+    try {
+      const data = await postFormData<RegisterResponse>(
+        apiEndpoint,
+        formData,
+        token
+      );
+      setResponseMessage(data.message);
+      if (data.success === true) {
+        setResponseStatus("success");
+        router.push("/login");
+      } else {
         setResponseStatus("error");
-      });
-  };
+      }
+    } catch (error) {
+      setResponseMessage("An error occurred while registering.");
+      setResponseStatus("error");
+    }
+  }
 
   return (
     <div>
       <Layout />
-      <div className="ml-14 mt-5">
+      <div className="ml-1">
         <ReturnBtn />
       </div>
       <div className="flex flex-col items-center">
         <h1 className="mb-4 text-2xl font-bold">Register</h1>
+
         <form className="w-80" onSubmit={handleSubmit}>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="mb-4">
+          <hr />
+          <div className="grid grid-cols-2 mt-3 gap-4">
+            <div className="mb-4 ">
               <label
                 htmlFor="first-name-id"
-                className="mb-2 block text-sm font-bold text-gray-700"
+                className="mb-2 block text-sm font-bold"
               >
                 First Name
               </label>
@@ -74,7 +91,7 @@ function Register() {
             <div className="mb-4">
               <label
                 htmlFor="last-name-id"
-                className="mb-2 block text-sm font-bold text-gray-700"
+                className="mb-2 block text-sm font-bold"
               >
                 Last Name
               </label>
@@ -90,10 +107,7 @@ function Register() {
             </div>
           </div>
           <div className="mb-4">
-            <label
-              htmlFor="email-id"
-              className="mb-2 block text-sm font-bold text-gray-700"
-            >
+            <label htmlFor="email-id" className="mb-2 block text-sm font-bold">
               Email
             </label>
             <input
@@ -108,10 +122,7 @@ function Register() {
             />
           </div>
           <div className="mb-5">
-            <label
-              htmlFor="phone-id"
-              className="mb-2 block text-sm font-bold text-gray-700"
-            >
+            <label htmlFor="phone-id" className="mb-2 block text-sm font-bold">
               Phone (use country code e.g +358)
             </label>
             <input
@@ -128,7 +139,7 @@ function Register() {
           <div className="mb-4 mt-2">
             <label
               htmlFor="password-id"
-              className="mb-2 block text-sm font-bold text-gray-700"
+              className="mb-2 block text-sm font-bold"
             >
               Password
             </label>
@@ -145,7 +156,7 @@ function Register() {
           <div className="mb-4">
             <label
               htmlFor="password-confirm-id"
-              className="mb-2 block text-sm font-bold text-gray-700"
+              className="mb-2 block text-sm font-bold "
             >
               Confirm Password
             </label>
@@ -171,7 +182,9 @@ function Register() {
               <span className="text-sm">I agree to the tems & conditions</span>
             </label>
           </div>
-          <button typeof="submit">Register</button>
+          <button className="bg-violet-700" type="submit">
+            Register
+          </button>
           <div>
             {responseStatus === "success" && (
               <p className="text-green-600">{responseMessage}</p>

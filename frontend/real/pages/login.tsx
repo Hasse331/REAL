@@ -2,13 +2,27 @@ import "../app/styles/globals.css";
 import Layout from "../app/components/layout";
 import Link from "next/link";
 import React, { useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import ReturnBtn from "@/app/components/buttons/return-button";
+import GetJwtToken from "@/app/utils/get_jwt";
+import useLoginCheck from "@/app/utils/check_jwt";
 
 function Login() {
   const [responseMessage, setResponseMessage] = useState("");
   const [responseStatus, setResponseStatus] = useState("");
+  const [noAlert, setNoAlert] = useState(false);
   const router = useRouter();
+
+  const loggedIn = useLoginCheck();
+  useEffect(() => {
+    const token = GetJwtToken(loggedIn);
+    if (token && !noAlert) {
+      alert("You have already logged in!");
+      router.push("/");
+      return;
+    }
+  }, [loggedIn, noAlert, router]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,7 +47,9 @@ function Login() {
         setResponseMessage(data.message);
         if (data.success === true) {
           setResponseStatus("success");
+          setNoAlert(true);
           /* Session Storage has XSS vulnerabilities -> change later */
+          sessionStorage.removeItem("jwt");
           sessionStorage.setItem("jwt", data.token);
           router.push("/");
         } else {
@@ -49,17 +65,16 @@ function Login() {
   return (
     <div>
       <Layout />
-      <div className="ml-14 mt-5">
+      <div className="ml-1">
         <ReturnBtn />
       </div>
       <div className="flex flex-col items-center">
-        <h1 className="mb-4 text-2xl font-bold">Login</h1>
+        <h1 className="mb-4 text-1xl font-bold">Login</h1>
+
         <form className="w-80" onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label
-              htmlFor="email-id"
-              className="mb-2 block text-sm font-bold text-gray-700"
-            >
+          <hr />
+          <div className="mb-4 mt-5">
+            <label htmlFor="email-id" className="mb-2 block text-sm font-bold ">
               Email
             </label>
             <input
@@ -75,7 +90,7 @@ function Login() {
           <div className="mb-6">
             <label
               htmlFor="password-id"
-              className="mb-2 block text-sm font-bold text-gray-700"
+              className="mb-2 block text-sm font-bold"
             >
               Password
             </label>
@@ -88,11 +103,15 @@ function Login() {
               required
             />
             <div>
-              <Link href="./forgot">
-                <p className="text-sm underline">Forgot the password?</p>
+              <Link href="./forgot" legacyBehavior>
+                <a>
+                  <p className="text-sm underline">Forgot the password?</p>
+                </a>
               </Link>
-              <Link href="./register">
-                <p className="text-sm underline">Register here.</p>
+              <Link href="./register" legacyBehavior>
+                <a>
+                  <p className="text-sm underline">Register here.</p>
+                </a>
               </Link>
             </div>
           </div>
@@ -102,19 +121,21 @@ function Login() {
                 name="remember"
                 type="hidden"
                 className="mr-2"
-                value="False"
+                value="no"
               />
               <input
                 name="remember"
                 id="remember-id"
                 type="checkbox"
                 className="mr-2"
-                value="True"
+                value="yes"
               />
-              <span className="text-sm">Keep me signed in.</span>
+              <span className="text-sm">Remember me for 14 days.</span>
             </label>
           </div>
-          <button typeof="submit">Login</button>
+          <button className="bg-violet-700" type="submit">
+            Login
+          </button>
           <div>
             {responseStatus === "success" && (
               <p className="text-green-600">{responseMessage}</p>

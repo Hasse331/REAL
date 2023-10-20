@@ -1,71 +1,105 @@
 // pages/UploadPage.js
 import "../app/styles/globals.css";
 import Layout from "../app/components/layout";
-import { useState } from "react";
-import Link from "next/link";
+import React, { useState } from "react";
 import ReturnBtn from "@/app/components/buttons/return-button";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { postFormData } from "@/app/utils/api";
+import GetJwtToken from "@/app/utils/get_jwt";
+import useLoginCheck from "@/app/utils/check_jwt";
 
-const EditProfile = () => {
-  const [text, setText] = useState("");
+function EditProfile() {
+  const router = useRouter();
+  const profileData = router.query;
+  const [responseMessage, setResponseMessage] = useState("");
+  const [responseStatus, setResponseStatus] = useState("");
+  const [about, setAbout] = useState(profileData.about);
+  const [title, setTitle] = useState(profileData.title);
+  const [text, setText] = useState(profileData.text);
+  const [url, setUrl] = useState(profileData.url);
   const [file, setFile] = useState(null);
 
-  const handleFileChange = (event: any) => {
-    setFile(event.target.files[0]);
-  };
+  const loggedIn = useLoginCheck();
+  const token = GetJwtToken(loggedIn);
 
-  const handleSubmit = () => {
-    console.log("File:", file);
-    console.log("Text:", text);
-  };
+  useEffect(() => {
+    if (!token) {
+      alert("Please login first");
+      router.push("/login?redirected=true");
+    }
+  }, [router, token]);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const apiEndpoint =
+      process.env.NEXT_PUBLIC_EDIT_PROFILE_API || "ENV_VARIABLE_NOT_FOUND";
+
+    interface RegisterResponse {
+      message: string;
+      success: boolean;
+    }
+
+    try {
+      const data = await postFormData<RegisterResponse>(
+        apiEndpoint,
+        formData,
+        token
+      );
+      setResponseMessage(data.message);
+      if (data.success === true) {
+        setResponseStatus("success");
+        router.push("/profile?userId=jwt");
+      } else {
+        setResponseStatus("error");
+      }
+    } catch (error) {
+      setResponseMessage("An error occurred while updating profile.");
+      setResponseStatus("error");
+    }
+  }
 
   return (
     <div>
       <Layout />
-
-      <div className="p-6 max-w-md mx-auto bg-white rounded-xl shadow-md space-y-4">
+      <div className="ml-1">
         <ReturnBtn />
-
-        <h1 text-start>Edit Profile</h1>
-        <p className="text-center ">
-          There isn&apos;t editable (fake) profilenames, since we want to keep
-          it keep real and reduce anonymous behavior, bot and spam accounts.
-        </p>
+      </div>
+      <div className="p-14 space-y-2">
+        <h1>Edit Profile</h1>
         <form onSubmit={handleSubmit}>
-          <div className="space-y-2">
-            <label className="block text-violet-700">
-              Upload Image
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="p-2 border border-violet-700 rounded"
-              />
-            </label>{" "}
-          </div>
+          <hr />
+          <p className="text-red-500">{responseMessage}</p>
 
           <div className="space-y-2">
-            <label className="block text-violet-700 mt-2">
-              About me text: (min 30. and max 500 letters)
+            <label className="block text-violet-700 mt-5 mb-5">
+              About me: (min 30. and max 500 letters)
               <textarea
-                value={text}
+                value={about}
                 rows={4}
-                onChange={(e) => setText(e.target.value)}
+                name="about"
+                onChange={(e) => setAbout(e.target.value)}
                 minLength={30}
                 maxLength={500}
                 className="p-2 w-full border border-violet-700 rounded"
                 placeholder="Tell about yourself in general"
+                required
               ></textarea>
             </label>
           </div>
-
           <div className="space-y-2 mt-3">
-            <hr />
             <label className="block text-violet-700">
               Your subtitle:
               <input
+                value={title}
+                name="title"
                 className="p-2 w-full border border-violet-700 rounded"
                 type="title"
                 placeholder="e.g. Hobbies, Passions, Profession, interests etc "
                 maxLength={30}
+                onChange={(e) => setTitle(e.target.value)}
               />
             </label>
           </div>
@@ -75,6 +109,7 @@ const EditProfile = () => {
               <textarea
                 value={text}
                 rows={4}
+                name="text"
                 onChange={(e) => setText(e.target.value)}
                 maxLength={200}
                 className="p-2 w-full border border-violet-700 rounded"
@@ -82,7 +117,21 @@ const EditProfile = () => {
               ></textarea>
             </label>
           </div>
-          <label htmlFor="visibility" className=" block text-violet-700">
+          <div className="space-y-2 mt-5">
+            <label className="block text-violet-700">
+              Your URL:
+              <input
+                value={url}
+                name="url"
+                className="p-2 w-full border border-violet-700 rounded"
+                type="title"
+                placeholder="https://www.youtube.com"
+                maxLength={30}
+                onChange={(e) => setUrl(e.target.value)}
+              />
+            </label>
+          </div>
+          <label htmlFor="visibility" className="mt-5 block text-violet-700">
             Profile type:
           </label>
           <div className="p-2 w-full border border-violet-700 rounded flex justify-evenly mb-5">
@@ -117,11 +166,18 @@ const EditProfile = () => {
               <span className="ml-2">Private</span>
             </label>
           </div>
-          <button typeof="submit">Update Profile</button>
+          <div className=" mb-10">
+            <button
+              className="rounded bg-gradient-to-r to-violet-700 from-violet-900 px-3 py-1 font-bold text-white shadow shadow-black hover:from-violet-950 hover:to-violet-800"
+              type="submit"
+            >
+              Update Profile
+            </button>
+          </div>
         </form>
       </div>
     </div>
   );
-};
+}
 
 export default EditProfile;

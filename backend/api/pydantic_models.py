@@ -19,6 +19,14 @@ class Login(BaseModel):
 
 
 class EditProfile(BaseModel):
+    about: str
+    title: str
+    text: str
+    url: str
+    visibility: str
+
+
+""" class EditProfile(BaseModel):
     profile_name: str
     tags: List[str]
     image: str
@@ -26,4 +34,4 @@ class EditProfile(BaseModel):
     title: str
     text: str
     url: str
-    visibility: str
+    visibility: str """

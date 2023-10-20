@@ -4,7 +4,7 @@
 
 /* Write your global styles here */
 body {
-  @apply bg-neutral-50 text-gray-700;
+  @apply to-gray-600 from-gray-800 bg-gradient-to-r text-gray-200;
 }
 
 h1 {
@@ -15,16 +15,41 @@ p {
   @apply my-2 text-lg;
 }
 
-button {
-  @apply rounded  bg-violet-700 px-3 py-1 font-bold text-white shadow shadow-black hover:bg-violet-950;
+input {
+  @apply text-gray-900 bg-gray-200;
 }
 
-@media (min-width: 1024px) {
+textarea {
+  @apply text-gray-900 bg-gray-200;
+}
+
+button {
+  @apply rounded  bg-gradient-to-r to-violet-700 from-violet-900 px-3 py-1 font-bold text-white shadow shadow-black hover:from-violet-950 hover:to-violet-800;
+}
+
+button[type="submit"] {
+  @apply rounded  bg-gradient-to-r to-violet-700 from-violet-900 px-3 py-1 font-bold text-white shadow shadow-black hover:from-violet-950 hover:to-violet-800;
+}
+
+@media (min-width: 690px) {
   body {
-    margin-left: 18rem; /* adjust to your preferred margin */
-    margin-right: 18rem; /* adjust to your preferred margin */
+    max-width: 650px;
+    margin: 0 auto;
   }
-  .right-nav-btn {
-    right: 18rem;
+}
+@media (min-width: 1100px) {
+  .left-nav {
+    margin-left: calc(20vw);
+  }
+  .right-nav {
+    margin-right: calc(20vw);
+  }
+}
+@media (min-width: 1600px) {
+  .left-nav {
+    margin-left: calc(30vw);
+  }
+  .right-nav {
+    margin-right: calc(30vw);
   }
 }

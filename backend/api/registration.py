@@ -23,7 +23,6 @@ class DataValidation:
         existing_user = self.db.query(User).filter_by(
             email=self.user_data.email).first()
 
-        print(self.user_data.phone)
         phone_is_valid = self.check_number(self.user_data.phone)
 
         if existing_user:
@@ -95,13 +94,11 @@ class DataValidation:
                 raise ValueError(
                     "Making default user profile failed. No user id found.")
 
-        print(user_id)
-
         default_profile = {
             "user_id": user_id,
             "profile_name": username,
             "tags": ["sports", "humor"],
-            "image": "/images/placeholder.png",
+            "image": "placeholder.png",
             "about": "Hello, i'm new here!",
             "title": "Hobbies/leisure:",
             "text": "Drinking coffee",

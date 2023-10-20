@@ -23,7 +23,7 @@ class LoginHandler:
             self.db.close()
         except:
             self.db.close()
-            return JSONResponse(content={"message": "Incorrect emaillll or password", "success": False})
+            return JSONResponse(content={"message": "Incorrect email or password", "success": False})
         return self.pw_and_jwt()
 
     def pw_and_jwt(self):
@@ -31,11 +31,12 @@ class LoginHandler:
 
             ISSUER = "REAL_API"
             SUBJECT = str(self.db_user.id)
+            JWT_SECRET = os.getenv("JWT_SECRET")
 
-            if self.login_data.remember == True:
-                expiration_time = datetime.datetime.utcnow() + datetime.timedelta(days=30)
+            if self.login_data.remember == "yes":
+                expiration_time = datetime.datetime.utcnow() + datetime.timedelta(days=14)
             else:
-                expiration_time = datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
+                expiration_time = datetime.datetime.utcnow() + datetime.timedelta(hours=24)
 
             claims = {
                 'iss': ISSUER,
@@ -45,8 +46,6 @@ class LoginHandler:
                 'iat': int(datetime.datetime.utcnow().timestamp()),
                 'jti': str(uuid.uuid4())
             }
-
-            JWT_SECRET = os.getenv("JWT_SECRET")
 
             encoded_jwt = jwt.encode(
                 claims, JWT_SECRET, algorithm="HS256")

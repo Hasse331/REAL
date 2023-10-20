@@ -3,8 +3,10 @@ import "../app/styles/globals.css";
 import Layout from "../app/components/layout";
 import { useState } from "react";
 import Link from "next/link";
+import React from "react";
+import ReturnBtn from "@/app/components/buttons/return-button";
 
-const UploadPage = () => {
+const NewPost = () => {
   const [text, setText] = useState("");
   const [file, setFile] = useState(null);
 
@@ -22,21 +24,34 @@ const UploadPage = () => {
   return (
     <div>
       <Layout />
-
-      <div className="p-6 max-w-md mx-auto bg-white rounded-xl shadow-md space-y-4">
-        <button
-          className="bg-transparent border-none shadow-none cursor-pointer focus:outline-none hover:bg-transparent hover:border-none text-black"
-          onClick={() => window.history.back()}
-        >
-          🡨 Return
-        </button>
-        <h1 text-start>New Post</h1>
+      <div className="ml-1">
+        <ReturnBtn />
+      </div>
+      <div className="p-14 mx-auto space-y-4">
+        <h1>New Post</h1>
         <div className="space-y-2">
-          <label className="block text-violet-700">Upload Image</label>
+          <label className="block  text-violet-700">Upload Image</label>
           <input
             type="file"
             onChange={handleFileChange}
-            className="p-2 border border-violet-700 rounded"
+            className="p-2 border border-violet-700 bg-transparent rounded text-gray-200"
+          />
+        </div>
+        <div className="mb-4 mt-5">
+          <label
+            htmlFor="title"
+            className="mb-2 text-violet-700 block text-sm font-bold "
+          >
+            Post title
+          </label>
+          <input
+            id="title-id"
+            type="title"
+            name="title"
+            className="w-full max-w-xs appearance-none rounded border px-3 py-2 shadow"
+            placeholder="Your post title"
+            autoComplete="off"
+            required
           />
         </div>
 
@@ -60,4 +75,4 @@ const UploadPage = () => {
   );
 };
 
-export default UploadPage;
+export default NewPost;
