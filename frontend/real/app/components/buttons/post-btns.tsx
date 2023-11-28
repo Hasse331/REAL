@@ -15,13 +15,13 @@ export default function PostButtons() {
       <button className="h-6 w-10 rounded-lg bg-violet-900 p-1 mt-1  text-xs text-white">
         Neg
       </button>
-
+      {/* 
       <button className="h-6 w-10 rounded-lg bg-violet-700 p-1 mt-1  text-xs text-white">
         Appr
       </button>
       <button className="h-6 w-10 rounded-lg bg-violet-900 p-1 mt-1 text-xs text-white">
         Inapp
-      </button>
+      </button> */}
     </div>
   );
 }

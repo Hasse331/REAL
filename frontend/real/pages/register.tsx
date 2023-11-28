@@ -1,11 +1,13 @@
+// @ts-nocheck
+
 import "../app/styles/globals.css";
 import Layout from "../app/components/layout";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import ReturnBtn from "@/app/components/buttons/return-button";
 import { postFormData } from "@/app/utils/api";
-import GetJwtToken from "@/app/utils/get_jwt";
-import useLoginCheck from "@/app/utils/check_jwt";
+import GetJwtToken from "@/app/utils/GetJwtToken";
+import useLoginCheck from "@/app/utils/useLoginCheck";
 import { useEffect } from "react";
 
 function Register() {

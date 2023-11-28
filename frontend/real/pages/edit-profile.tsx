@@ -1,3 +1,4 @@
+// @ts-nocheck
 // pages/UploadPage.js
 import "../app/styles/globals.css";
 import Layout from "../app/components/layout";
@@ -6,8 +7,8 @@ import ReturnBtn from "@/app/components/buttons/return-button";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { postFormData } from "@/app/utils/api";
-import GetJwtToken from "@/app/utils/get_jwt";
-import useLoginCheck from "@/app/utils/check_jwt";
+import GetJwtToken from "@/app/utils/GetJwtToken";
+import useLoginCheck from "@/app/utils/useLoginCheck";
 
 function EditProfile() {
   const router = useRouter();
@@ -71,7 +72,12 @@ function EditProfile() {
         <h1>Edit Profile</h1>
         <form onSubmit={handleSubmit}>
           <hr />
-          <p className="text-red-500">{responseMessage}</p>
+          {responseStatus === "success" && (
+            <p className="text-green-600">{responseMessage}</p>
+          )}
+          {responseStatus === "error" && (
+            <p className="text-red-600">{responseMessage}</p>
+          )}
 
           <div className="space-y-2">
             <label className="block text-violet-700 mt-5 mb-5">

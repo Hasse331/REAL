@@ -5,13 +5,15 @@ from fastapi import Depends
 from uuid import UUID
 from fastapi.responses import JSONResponse
 from fastapi import FastAPI, UploadFile, File
+from sqlalchemy import func
 
 import registration
 import pydantic_models
-from models import Profile, SessionLocal
+from models import Profile, Post, SessionLocal
 import login_logic
-import image
+from media import load_media, save_media
 from jwt_auth import jwt_authentication
+import new_post
 
 # CHECK FOR PRODUCTION:
 app = FastAPI(debug=True)
@@ -79,31 +81,51 @@ def edit_profile(profile_edit: pydantic_models.EditProfile, db: Session = Depend
 
 # MEDIA
 @app.post("/post/api/media/")
-def post_image(post_id: str = Form(None), media_type: str = Form(...), file: UploadFile = File(None), user_id: UUID = Depends(jwt_authentication)):
-    image_instance = image.ImageHandler(user_id, media_type, post_id, file)
+def post_image(post_id: str = Form(None), media_type: str = Form(...), file: UploadFile = File(...), user_id: UUID = Depends(jwt_authentication)):
+    image_instance = save_media.MediaHandler(
+        media_type, user_id, post_id, file)
     return image_instance.upload_media()
 
 
-@app.get("/get/api/profile_image/{user_id}")
+@app.get("/load/api/profile_image/{user_id}")
 def get_image(user_id: str):
     media_type = "profile"
-    image_instance = image.ImageHandler(user_id, media_type)
-    return image_instance.get_media()
+    image_instance = load_media.MediaHandler(media_type, user_id)
+    return image_instance.load_media()
 
 
-@app.get("/get/api/post_media/")
-def get_image(user_id: str):
-    media_type = "profile"
-    image_instance = image.ImageHandler(user_id, media_type)
-    return image_instance.get_media()
+@app.get("/load/api/post_media/{post_id}")
+def get_image(post_id: str):
+    media_type = "post"
+    image_instance = load_media.MediaHandler(media_type, post_id=post_id)
+    return image_instance.load_media()
 
 
-# POSTS
-@app.post("/new-post/{user_id}")
-def edit_profile(user_id: UUID):
-    pass
+# USR_POSTS:
+@app.post("/new-post/")
+def edit_profile(media_type: str = Form(...), file: UploadFile = File(...), user_id: UUID = Depends(jwt_authentication), title: str = Form(...), text: str = Form(...)):
+    if user_id and media_type == "post":
+        # validate, create post_id save to database, post_id ->
+
+        instance = new_post.UsrPost(user_id, title, text, media_type, file)
+        post_id = instance.validate()
+
+        image_instance = save_media.MediaHandler(
+            media_type, user_id, post_id, file)
+        return image_instance.upload_media()
+
+    else:
+        return JSONResponse(content={"message": "Session Authentication Failed", "success": False})
 
 
-@app.get("/load-post/{user_id}")
-def edit_profile(user_id: UUID):
-    pass
+def conditional_authentication(loggedIn: bool):
+    if loggedIn:
+        return Depends(jwt_authentication)
+    return None
+
+
+@app.get("/load-post/{loggedIn}")
+def edit_profile(user_id: UUID = Depends(conditional_authentication), db: Session = Depends(get_db)):
+
+    # loggedIn parameter is for later use to apply MyAlg
+    return db.query(Post).order_by(func.random()).first()

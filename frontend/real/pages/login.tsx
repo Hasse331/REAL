@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import "../app/styles/globals.css";
 import Layout from "../app/components/layout";
 import Link from "next/link";
@@ -5,8 +7,8 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import ReturnBtn from "@/app/components/buttons/return-button";
-import GetJwtToken from "@/app/utils/get_jwt";
-import useLoginCheck from "@/app/utils/check_jwt";
+import GetJwtToken from "@/app/utils/GetJwtToken";
+import useLoginCheck from "@/app/utils/useLoginCheck";
 
 function Login() {
   const [responseMessage, setResponseMessage] = useState("");

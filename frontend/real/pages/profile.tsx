@@ -7,8 +7,10 @@ import Post from "../app/components/post";
 import TopicBtns from "../app/components/topics";
 import jwt_decode from "jwt-decode";
 import { useRouter } from "next/router";
-import React, { useState, useEffect } from "react";
-import useLoginCheck from "@/app/utils/check_jwt";
+import React, { useState, useEffect, useContext } from "react";
+import useLoginCheck from "@/app/utils/useLoginCheck";
+import useSocketConnection from "@/app/utils/useSocketConnection";
+import getUserUUID from "@/app/utils/getUserId";
 
 function Profile() {
   type ProfileData = {
@@ -22,35 +24,31 @@ function Profile() {
     visibility: string;
   };
 
+  // States
   const [data, setData] = useState<ProfileData | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [popMessage, setPopMessage] = useState("");
 
-  const loggedIn = useLoginCheck();
+  const socket = useSocketConnection();
 
+  const loggedIn = useLoginCheck("noSet");
   const router = useRouter();
-  let userId = router.query.userId;
-  let jwtUsed = false;
-  let token: string | null;
+  let myJwtUsed = false;
 
-  if (userId === "jwt") {
+  // Check session type and get token
+  let userId = router.query.userId;
+  let token: string | null;
+  if (userId === "myJwt") {
     token = sessionStorage.getItem("jwt");
-    jwtUsed = true;
+    myJwtUsed = true;
     if (!token) {
       alert("Invalid login session. Try to login again.");
-    }
-
-    type DecodedToken = {
-      sub: string;
-    };
-
-    if (token) {
-      const decodedToken = jwt_decode(token) as DecodedToken;
-      userId = decodedToken.sub;
+    } else {
+      userId = getUserUUID();
     }
   }
 
-  /* Fetch profile by user id */
+  // Fetch profile data by user id
   useEffect(() => {
     const apiEndpoint = process.env.NEXT_PUBLIC_PROFILE_API_ENDPOINT;
     fetch(`${apiEndpoint}${userId}` || "INCORRECT_ENDPOINT", {
@@ -124,9 +122,26 @@ function Profile() {
     }
   };
 
-  const getImageEndpoint = process.env.NEXT_PUBLIC_GET_API_PROFILE_IMAGE;
+  const requestHandler = function () {
+    let token: string | undefined;
+    let myUserId: string | undefined;
+    myUserId = getUserUUID();
 
-  if (!data) return <div>Loading page...</div>;
+    if (socket) {
+      socket.emit("contact-request", {
+        senderId: myUserId,
+        recipientId: userId,
+      });
+    }
+  };
+  const subscribeHandler = function () {
+    // Working on this with MyAlg project
+  };
+
+  const getImageEndpoint =
+    process.env.NEXT_PUBLIC_GET_API_PROFILE_IMAGE || "INCORRECT_ENV_VARIABLE";
+
+  const loading = "Loading";
 
   return (
     <div>
@@ -135,10 +150,10 @@ function Profile() {
       <div className="m-6">
         <div className="flex-1">
           <h2 className="text-2xl mr-4">
-            <b>{data.profile_name}</b>
+            <b>{data ? data.profile_name : `${loading} profile name..`}</b>
           </h2>{" "}
           <div>
-            {loggedIn && jwtUsed && (
+            {loggedIn && myJwtUsed && (
               <div>
                 <button
                   className="m-1 ml-0 p-2 text-xs"
@@ -202,7 +217,11 @@ function Profile() {
         </div>
         <Image
           className=" mt-3 rounded border border-solid border-violet-700 shadow shadow-black"
-          src={getImageEndpoint + userId}
+          src={
+            getImageEndpoint + userId
+              ? getImageEndpoint + userId
+              : `${loading} image..`
+          }
           alt=""
           width={500}
           height={500}
@@ -215,32 +234,41 @@ function Profile() {
         <h2>
           <b>About Me:</b>
         </h2>
-        <p>{data.about}</p>
+        <p>{data ? data.about : `${loading} text..`}</p>
         <h2>
-          <b>{data.title}</b>
-          <p>{data.text}</p>
+          <b>{data ? data.title : `${loading} subtitle..`}</b>
+          <p>{data ? data.text : `${loading} text..`}</p>
         </h2>
         <h2>
           <b>URL link:</b>
           <p>
-            <a className="underline" href={data.url}>
-              {data.url}
-            </a>
+            <a
+              className="underline"
+              href={data ? data.url : `${loading} url..`}
+            ></a>
           </p>
         </h2>
-        <button
-          type="submit"
-          className="rounded  bg-gradient-to-r to-violet-700 from-violet-900 px-3 py-1 font-bold text-white shadow shadow-black hover:from-violet-950 hover:to-violet-800"
-        >
-          Request
-        </button>
-        <button
-          type="submit"
-          className="m-1 rounded  bg-gradient-to-r to-violet-700 from-violet-900 px-3 py-1 font-bold text-white shadow shadow-black hover:from-violet-950 hover:to-violet-800"
-        >
-          Subscribe
-        </button>
-        <h1>Posts by: {data.profile_name}</h1>
+        {!myJwtUsed && (
+          <div>
+            <button
+              onClick={requestHandler}
+              type="submit"
+              className="rounded  bg-gradient-to-r to-violet-700 from-violet-900 px-3 py-1 font-bold text-white shadow shadow-black hover:from-violet-950 hover:to-violet-800"
+            >
+              Request
+            </button>
+            <button
+              onClick={subscribeHandler}
+              type="submit"
+              className="m-1 rounded  bg-gradient-to-r to-violet-700 from-violet-900 px-3 py-1 font-bold text-white shadow shadow-black hover:from-violet-950 hover:to-violet-800"
+            >
+              Subscribe
+            </button>
+          </div>
+        )}
+        <h1>
+          Posts by: {data ? data.profile_name : `${loading} profile name..`}
+        </h1>
         <InfiniteScroll ComponentToRender={Post} />
       </div>
     </div>

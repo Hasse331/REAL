@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 import uuid
 from sqlalchemy.dialects.postgresql import UUID, ARRAY
 from sqlalchemy import create_engine
@@ -42,7 +42,6 @@ class Profile(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), index=True)
     profile_name = Column(String)
     tags = Column(ARRAY(String))
-    image = Column(String)
     about = Column(String)
     title = Column(String)
     text = Column(String)
@@ -50,5 +49,23 @@ class Profile(Base):
     visibility = Column(String)
 
 
+class Post(Base):
+    __tablename__ = 'real_posts'
+
+    post_id = Column(UUID(as_uuid=True), primary_key=True,
+                     default=uuid.uuid4, index=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), index=True)
+    tags = Column(ARRAY(String))
+    profile_name = Column(String)
+    title = Column(String)
+    text = Column(String)
+    media_type = Column(String)
+
+
+# Recreate the Post table
+""" Contacts.__table__.drop(engine)
+Post.__table__.create(engine) """
+
+# Recreate the all tables
 """ Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine) """

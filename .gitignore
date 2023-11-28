@@ -1,4 +1,5 @@
 .env
 backend/real-env
+__pycache__/
 projekti_suunnitelma.txt
 node_modules

@@ -24,14 +24,3 @@ class EditProfile(BaseModel):
     text: str
     url: str
     visibility: str
-
-
-""" class EditProfile(BaseModel):
-    profile_name: str
-    tags: List[str]
-    image: str
-    about: str
-    title: str
-    text: str
-    url: str
-    visibility: str """

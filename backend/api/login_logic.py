@@ -50,6 +50,12 @@ class LoginHandler:
             encoded_jwt = jwt.encode(
                 claims, JWT_SECRET, algorithm="HS256")
 
+            print(SUBJECT)
+            print(SUBJECT)
+            print(SUBJECT)
+            print(SUBJECT)
+            print(SUBJECT)
+
             return JSONResponse(content={
                 "token": encoded_jwt,
                 "message": "Successfull logged in",

@@ -2,9 +2,8 @@ import "../styles/globals.css";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
-import useLoginCheck from "../utils/check_jwt";
+import useLoginCheck from "../utils/useLoginCheck";
 import { useRouter } from "next/router";
-import { useState } from "react";
 
 type Props = {
   children?: React.ReactNode;
@@ -21,7 +20,9 @@ function Layout({ children }: Props) {
 
 function NavBar() {
   const [loggedIn, setLoggedIn] = useLoginCheck();
+
   const router = useRouter();
+
   function handleLogout() {
     console.log("logging out...");
     sessionStorage.removeItem("jwt");
@@ -30,6 +31,7 @@ function NavBar() {
   }
 
   return (
+    /*      */
     <nav>
       <div className="flex rounded bg-gradient-to-r from-30% via-80% shadow shadow-black via-violet-800 to-violet-600 from-violet-950 px-4 text-blue-50 justify-between">
         <div className="ml-2 flex justify-normal">
@@ -46,14 +48,16 @@ function NavBar() {
             <div className="flex mt-3">
               <div>
                 <button
+                  data-testid="logout-button"
                   onClick={handleLogout}
                   className="rounded mr-4 mt-1 hover:hover:bg-violet-700"
                 >
                   Logout
                 </button>
               </div>
-              <Link href={"./profile?userId=jwt"}>
+              <Link href={"./profile?userId=myJwt"}>
                 <Image
+                  data-testid="profile-image"
                   className="rounded-xl mt-1 mr-3 border-2 border-solid border-violet-700  hover:border-violet-900 "
                   src="/images/profile.jpg"
                   alt="profile"

@@ -98,7 +98,6 @@ class DataValidation:
             "user_id": user_id,
             "profile_name": username,
             "tags": ["sports", "humor"],
-            "image": "placeholder.png",
             "about": "Hello, i'm new here!",
             "title": "Hobbies/leisure:",
             "text": "Drinking coffee",
