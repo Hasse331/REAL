@@ -99,9 +99,9 @@ class DataValidation:
             "profile_name": username,
             "tags": ["sports", "humor"],
             "about": "Hello, i'm new here!",
-            "title": "Hobbies/leisure:",
-            "text": "Drinking coffee",
-            "url": "http://localhost:3000/",
+            "title": "My Custom Title Here:",
+            "text": "My Custom Text",
+            "url": "",
             "visibility": "restricted"
         }
 

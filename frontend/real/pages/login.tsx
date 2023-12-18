@@ -34,7 +34,7 @@ function Login() {
     formData.forEach((value, key) => {
       dataObject[key] = value;
     });
-    const apiEndpoint = process.env.NEXT_PUBLIC_LOGIN_API_ENDPOINT;
+    const apiEndpoint = process.env.NEXT_PUBLIC_LOGIN;
 
     fetch(apiEndpoint || "ENV_VARIABLE_NOT_FOUND", {
       method: "POST",

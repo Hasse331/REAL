@@ -11,6 +11,9 @@ const config: Config = {
       fontSize: {
         xxs: "0.7rem",
       },
+      width: {
+        "88": "22rem",
+      },
     },
     screens: {},
     sm: "640px",

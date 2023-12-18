@@ -12,19 +12,46 @@ jest.mock("next/link", () => {
   return ({ children }: childrendProp) => children;
 });
 
-test("LeftNav button renders and clicked", () => {
-  render(<LeftNavBtn link="/some-path" />);
+jest.mock("next/router", () => ({
+  useRouter: jest.fn().mockImplementation(() => ({
+    back: jest.fn(),
+    push: jest.fn(),
+  })),
+}));
 
-  const button = screen.getByText("🡨");
+describe("Not returning tests", () => {
+  test("LeftNav button renders and clicked", () => {
+    render(<LeftNavBtn link="/some-path" />);
 
-  fireEvent.click(button);
-  expect(button).toBeInTheDocument();
+    const button = screen.getByText("🡨");
+
+    fireEvent.click(button);
+    expect(button).toBeInTheDocument();
+  });
+  test("RightNav button renders and clicked", () => {
+    render(<RightNavBtn link="/some-path" />);
+
+    const button = screen.getByText("🡪");
+
+    fireEvent.click(button);
+    expect(button).toBeInTheDocument();
+  });
 });
-test("RightNav button renders and clicked", () => {
-  render(<RightNavBtn link="/some-path" />);
+describe("Returning tests", () => {
+  test("LeftNav button renders and clicked", () => {
+    render(<LeftNavBtn link="/some-path" useReturn={true} />);
 
-  const button = screen.getByText("🡪");
+    const button = screen.getByText("🡨");
 
-  fireEvent.click(button);
-  expect(button).toBeInTheDocument();
+    fireEvent.click(button);
+    expect(button).toBeInTheDocument();
+  });
+  test("RightNav button renders and clicked", () => {
+    render(<RightNavBtn link="/some-path" useReturn={true} />);
+
+    const button = screen.getByText("🡪");
+
+    fireEvent.click(button);
+    expect(button).toBeInTheDocument();
+  });
 });

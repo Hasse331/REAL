@@ -35,7 +35,7 @@ function Register() {
     }
     const formData = new FormData(e.currentTarget);
     const apiEndpoint =
-      process.env.NEXT_PUBLIC_REGISTER_API_ENDPOINT || "ENV_VARIABLE_NOT_FOUND";
+      process.env.NEXT_PUBLIC_REGISTER || "ENV_VARIABLE_NOT_FOUND";
 
     interface RegisterResponse {
       message: string;

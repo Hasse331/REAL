@@ -12,6 +12,9 @@ class UsrPost():
 
     def validate(self):
 
+        # TASK: ADD REAL VALIDATIONS HERE
+        # TASK: ADD REAL VALIDATIONS HERE
+        # TASK: ADD REAL VALIDATIONS HERE
         # validating the data first
         if self.media.content_type.startswith(
                 "image/"):

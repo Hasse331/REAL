@@ -1,7 +1,7 @@
 import "../styles/globals.css";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 
-function InfiniteScroll({ ComponentToRender }: any) {
+function InfiniteScroll({ ComponentToRender, displaRNavBtn }: any) {
   const [items, setItems] = useState([1, 2, 3]);
   const loader = useRef(null);
 
@@ -40,7 +40,7 @@ function InfiniteScroll({ ComponentToRender }: any) {
   return (
     <div>
       {items.map((item) => (
-        <ComponentToRender key={item} />
+        <ComponentToRender key={item} displaRNavBtn={displaRNavBtn} />
       ))}
       <div ref={loader}>Loading...</div>
     </div>

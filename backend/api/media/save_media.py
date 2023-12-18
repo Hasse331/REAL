@@ -100,6 +100,6 @@ class MediaHandler():
             self.s3.upload_fileobj(
                 self.media.file, self.BUCKET_NAME, s3_path)
             print("success!")
-            return {"message": "Post Uploaded Succesfully"}
+            return {"message": "success"}
         except NoCredentialsError:
             return {"message": "Credentials not available"}

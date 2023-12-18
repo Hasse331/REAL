@@ -36,7 +36,7 @@ function EditProfile() {
 
     const formData = new FormData(e.currentTarget);
     const apiEndpoint =
-      process.env.NEXT_PUBLIC_EDIT_PROFILE_API || "ENV_VARIABLE_NOT_FOUND";
+      process.env.NEXT_PUBLIC_EDIT_PROFILE || "ENV_VARIABLE_NOT_FOUND";
 
     interface RegisterResponse {
       message: string;

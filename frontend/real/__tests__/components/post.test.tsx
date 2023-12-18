@@ -9,10 +9,19 @@ jest.mock("../../app/utils/useLoginCheck", () => ({
   default: jest.fn(),
 }));
 
+jest.mock("next/router", () => ({
+  useRouter: jest.fn().mockImplementation(() => ({
+    query: {
+      isCommentPage: "mocked",
+    },
+  })),
+}));
+
 jest.mock("../../app/utils/GetJwtToken", () => jest.fn());
 
-process.env.NEXT_PUBLIC_LOAD_USR_POST = "/mocked-api-endpoint";
-process.env.NEXT_PUBLIC_GET_POST_API_MEDIA = "/mocked-media-endpoint";
+process.env.NEXT_PUBLIC_LOAD_USR_POST_DATA = "/mocked-api-endpoint";
+process.env.NEXT_PUBLIC_GET_USRPOST_MEDIA = "/mocked-media-endpoint";
+process.env.NEXT_PUBLIC_GET_PROFILE_IMAGE = "/placeholder";
 
 global.fetch = jest.fn(
   () =>
@@ -22,7 +31,7 @@ global.fetch = jest.fn(
           post_id: "1",
           user_id: "user123",
           tags: ["tag1", "tag2"],
-          profile_name: "Mocked User",
+          profile_name: "Mocked Username",
           title: "Mocked Title",
           text: "Mocked Text",
           media_type: "image",
@@ -53,10 +62,6 @@ describe("Testing post component", () => {
     // Check if the title and text from fetched data are rendered
     expect(screen.getByText("Mocked Title")).toBeInTheDocument();
     expect(screen.getByText("Mocked Text")).toBeInTheDocument();
-    const nameElement = screen.getByText(/By:/i);
-    expect(nameElement).toHaveTextContent("Mocked User");
-
-    // Check for interactive elements like buttons
-    expect(screen.getByText("Open conversation...")).toBeInTheDocument();
+    expect(screen.getByText("Mocked Username")).toBeInTheDocument();
   });
 });

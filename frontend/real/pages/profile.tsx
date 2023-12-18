@@ -5,7 +5,6 @@ import Image from "next/image";
 import InfiniteScroll from "../app/utils/infinite-scroll";
 import Post from "../app/components/post";
 import TopicBtns from "../app/components/topics";
-import jwt_decode from "jwt-decode";
 import { useRouter } from "next/router";
 import React, { useState, useEffect, useContext } from "react";
 import useLoginCheck from "@/app/utils/useLoginCheck";
@@ -28,40 +27,102 @@ function Profile() {
   const [data, setData] = useState<ProfileData | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [popMessage, setPopMessage] = useState("");
+  const [alreadyContact, setAlreadyContact] = useState(false);
+  const [requestPending, setRequestPending] = useState(false);
+  const [itIsMyProfile, setItIsMyProfile] = useState(false);
 
   const socket = useSocketConnection();
 
   const loggedIn = useLoginCheck("noSet");
   const router = useRouter();
   let myJwtUsed = false;
+  const myUserId = getUserUUID();
 
   // Check session type and get token
-  let userId = router.query.userId;
+  let routeUserId = router.query.userId as string;
   let token: string | null;
-  if (userId === "myJwt") {
+  if (routeUserId === "myJwt") {
     token = sessionStorage.getItem("jwt");
     myJwtUsed = true;
     if (!token) {
       alert("Invalid login session. Try to login again.");
-    } else {
-      userId = getUserUUID();
     }
   }
+  let fetchUserId: string | undefined;
+  if (myJwtUsed) fetchUserId = myUserId;
+  else fetchUserId = routeUserId;
+
+  useEffect(() => {
+    if (myUserId) {
+      if (myUserId === routeUserId) {
+        setItIsMyProfile(true);
+      } else {
+        setItIsMyProfile(false);
+      }
+    }
+  }, [myUserId, routeUserId]);
 
   // Fetch profile data by user id
   useEffect(() => {
-    const apiEndpoint = process.env.NEXT_PUBLIC_PROFILE_API_ENDPOINT;
-    fetch(`${apiEndpoint}${userId}` || "INCORRECT_ENDPOINT", {
-      method: "GET",
-    })
+    const getProfileEndpoint = process.env.NEXT_PUBLIC_GET_PROFILE;
+    fetch(
+      `${getProfileEndpoint}${fetchUserId}` ||
+        "INCORRECT_ENDPOINT: getProfileEndpoint",
+      {
+        method: "GET",
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         setData(data as ProfileData);
       })
       .catch((error) => {
-        console.log("ERROR:", error);
+        console.error("ERROR:", error);
       });
-  }, [userId]);
+  }, [fetchUserId]);
+
+  interface Contact {
+    sender_id: string;
+    recipient_id: string;
+    accepted: boolean;
+    latest_ts: Date;
+  }
+
+  useEffect(() => {
+    if (socket && !myJwtUsed) {
+      socket.emit("fetch_contacts", myUserId);
+
+      const handleContactsData = (contacts: Contact[]) => {
+        // Assuming contacts is an array
+        let isAlreadyContact = false;
+        let isRequestPending = false;
+
+        contacts.forEach((contact) => {
+          if (
+            (contact.sender_id === myUserId &&
+              contact.recipient_id === routeUserId) ||
+            (contact.sender_id === routeUserId &&
+              contact.recipient_id === myUserId)
+          ) {
+            isAlreadyContact = true;
+            if (contact.accepted === false) {
+              isRequestPending = true;
+            }
+          }
+        });
+
+        setAlreadyContact(isAlreadyContact);
+        setRequestPending(isRequestPending);
+      };
+
+      socket.on("contacts_data", handleContactsData);
+
+      // Clean up the event listener when the component unmounts or dependencies change
+      return () => {
+        socket.off("contacts_data", handleContactsData);
+      };
+    }
+  }, [socket, myJwtUsed, myUserId, routeUserId]);
 
   const clickEditProfile = () => {
     router.push({
@@ -99,11 +160,12 @@ function Profile() {
     formData.append("file", selectedFile);
     formData.append("media_type", imgType);
 
-    const apiEndpoint =
-      process.env.NEXT_PUBLIC_POST_API_MEDIA || "ENV_VARIABLE_NOT_FOUND";
+    const uploadMediaEndpoint =
+      process.env.NEXT_PUBLIC_UPLOAD_MEDIA ||
+      "ENV_VARIABLE_NOT_FOUND: uploadMediaEndpoint profile.tsx";
 
     try {
-      const response = await fetch(apiEndpoint, {
+      const response = await fetch(uploadMediaEndpoint, {
         method: "POST",
         body: formData,
         headers: {
@@ -123,30 +185,38 @@ function Profile() {
   };
 
   const requestHandler = function () {
-    let token: string | undefined;
-    let myUserId: string | undefined;
-    myUserId = getUserUUID();
-
     if (socket) {
-      socket.emit("contact-request", {
+      socket.emit("contact_request", {
         senderId: myUserId,
-        recipientId: userId,
+        recipientId: routeUserId,
       });
+      setAlreadyContact(true);
+      setRequestPending(true);
     }
   };
   const subscribeHandler = function () {
     // Working on this with MyAlg project
   };
+  const removeContactHandler = function () {
+    if (socket) {
+      socket.emit("remove_contact", {
+        senderId: myUserId,
+        recipientId: routeUserId,
+      });
+      setAlreadyContact(false);
+    }
+  };
 
   const getImageEndpoint =
-    process.env.NEXT_PUBLIC_GET_API_PROFILE_IMAGE || "INCORRECT_ENV_VARIABLE";
+    process.env.NEXT_PUBLIC_GET_PROFILE_IMAGE ||
+    "INCORRECT_ENV_VARIABLE: getImageEndpoint";
 
   const loading = "Loading";
 
   return (
     <div>
       <Layout />
-      <LeftNavBtn link="./" />
+      <LeftNavBtn link="./" useReturn={true} />
       <div className="m-6">
         <div className="flex-1">
           <h2 className="text-2xl mr-4">
@@ -190,8 +260,6 @@ function Profile() {
                           />
                         </label>
                       </div>
-
-                      {/* Close button */}
                       <button
                         className="absolute top-2 right-2 p-1 h-8"
                         onClick={() => setIsOpen(false)}
@@ -218,8 +286,8 @@ function Profile() {
         <Image
           className=" mt-3 rounded border border-solid border-violet-700 shadow shadow-black"
           src={
-            getImageEndpoint + userId
-              ? getImageEndpoint + userId
+            getImageEndpoint + fetchUserId
+              ? getImageEndpoint + fetchUserId
               : `${loading} image..`
           }
           alt=""
@@ -231,32 +299,46 @@ function Profile() {
           <TopicBtns />
         </div>
         <br />
-        <h2>
-          <b>About Me:</b>
-        </h2>
-        <p>{data ? data.about : `${loading} text..`}</p>
-        <h2>
+        {data?.about && (
+          <h2>
+            <b>About Me:</b>
+          </h2>
+        )}
+        <p className="break-words">{data ? data.about : `${loading} text..`}</p>
+        <h2 className="break-words">
           <b>{data ? data.title : `${loading} subtitle..`}</b>
-          <p>{data ? data.text : `${loading} text..`}</p>
         </h2>
+        <p className="break-words">{data ? data.text : `${loading} text..`}</p>
         <h2>
-          <b>URL link:</b>
+          <b>{data?.url ? "Links:" : ""}</b>
           <p>
             <a
-              className="underline"
+              className="underline break-words"
               href={data ? data.url : `${loading} url..`}
-            ></a>
+            >
+              {data?.url}
+            </a>
           </p>
         </h2>
-        {!myJwtUsed && (
+        {!myJwtUsed && !itIsMyProfile && (
           <div>
-            <button
-              onClick={requestHandler}
-              type="submit"
-              className="rounded  bg-gradient-to-r to-violet-700 from-violet-900 px-3 py-1 font-bold text-white shadow shadow-black hover:from-violet-950 hover:to-violet-800"
-            >
-              Request
-            </button>
+            {alreadyContact ? (
+              <button
+                onClick={removeContactHandler}
+                type="submit"
+                className="rounded  bg-gradient-to-r to-violet-700 from-violet-900 px-3 py-1 font-bold text-white shadow shadow-black hover:from-violet-950 hover:to-violet-800"
+              >
+                {requestPending ? "Remove Request" : "Remove Contact"}
+              </button>
+            ) : (
+              <button
+                onClick={requestHandler}
+                type="submit"
+                className="rounded bg-gradient-to-r to-violet-700 from-violet-900 px-3 py-1 font-bold text-white shadow shadow-black hover:from-violet-950 hover:to-violet-800"
+              >
+                Request Contact
+              </button>
+            )}
             <button
               onClick={subscribeHandler}
               type="submit"
@@ -269,7 +351,7 @@ function Profile() {
         <h1>
           Posts by: {data ? data.profile_name : `${loading} profile name..`}
         </h1>
-        <InfiniteScroll ComponentToRender={Post} />
+        <InfiniteScroll ComponentToRender={Post} isIndexPage={false} />
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import Image from "next/image";
 import React from "react";
 import useLoginCheck from "../utils/useLoginCheck";
 import { useRouter } from "next/router";
+import ProfileIcon from "./buttons/profile-icon";
 
 type Props = {
   children?: React.ReactNode;
@@ -33,7 +34,7 @@ function NavBar() {
   return (
     /*      */
     <nav>
-      <div className="flex rounded bg-gradient-to-r from-30% via-80% shadow shadow-black via-violet-800 to-violet-600 from-violet-950 px-4 text-blue-50 justify-between">
+      <div className="flex rounded bg-gradient-to-r from-30% via-80% shadow shadow-black via-violet-800 to-violet-500 from-violet-950 px-4 text-blue-50 justify-between">
         <div className="ml-2 flex justify-normal">
           <Link href={"./"}>
             <h1>
