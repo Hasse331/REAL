@@ -77,9 +77,6 @@ class IDList(BaseModel):
 def get_profilemames(request_body: IDList, db: Session = Depends(get_db)):
     try:
         profilenames = db.query(Profile).filter(Profile.user_id.in_(request_body.idList)).all() 
-        print(profilenames)
-        print(profilenames)
-        print(profilenames)
         result = [{"user_id": str(profile.user_id), "username": profile.profile_name} for profile in profilenames]
         return result
     except Exception as e:
@@ -151,7 +148,16 @@ def conditional_authentication(loggedIn: bool):
 def edit_profile(user_id: UUID = Depends(conditional_authentication), db: Session = Depends(get_db)):
 
     # loggedIn parameter is for later use to apply MyAlg
-    return db.query(Post).order_by(func.random()).first()
+
+    random_posts = db.query(Post).order_by(func.random()).limit(4).all()
+
+    posts_data = []
+    for data in random_posts:
+        posts_data.append( {"post_id": data.post_id, "user_id": data.user_id, "tags": data.tags, "profile_name": data.profile_name, "title": data.title, "text": data.text, "media_type": data.media_type})
+           
+    return posts_data
+
+    
 
 class CommentPyd(BaseModel):
     comment: str
