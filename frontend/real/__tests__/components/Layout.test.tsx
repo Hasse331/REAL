@@ -1,5 +1,5 @@
 import React from "react";
-import NavBar from "../../app/components/layout";
+import NavBar from "../../app/components/navbar";
 import "@testing-library/jest-dom";
 import useLoginCheck from "../../app/utils/useLoginCheck";
 import { render, screen } from "@testing-library/react";

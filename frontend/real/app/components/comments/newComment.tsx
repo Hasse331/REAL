@@ -1,72 +1,9 @@
-import Layout from "../app/components/layout";
-import Post from "../app/components/post";
-import Comment from "../app/components/comment";
-import ReturnBtn from "@/app/components/buttons/return-button";
-import LeftNavBtn from "@/app/components/buttons/nav-left";
-import React, { useEffect } from "react";
-import { useState } from "react";
 import useLoginCheck from "@/app/utils/useLoginCheck";
 import GetJwtToken from "@/app/utils/GetJwtToken";
+import React from "react";
+import { useState } from "react";
 
-export default function PostPage() {
-  const [postIdFromChild, setPostIdFromChild] = useState<string>();
-  const [commentsData, setCommentsData] = useState<CommentData>([]);
-
-  type CommentData = {
-    comment: string;
-    profile_name: string;
-    user_id: string;
-    // Uncomment the following line when score or priority is implemented
-    // score?: number;
-    // priority?: number;
-  }[];
-
-  useEffect(() => {
-    if (postIdFromChild) {
-      const loadCommentsApiEndpoint =
-        process.env.NEXT_PUBLIC_LOAD_COMMENTS ||
-        "INCORRECT ENV VAR: loadCommentsApiEndpoint";
-      fetch(`${loadCommentsApiEndpoint}${postIdFromChild}`, {
-        method: "GET",
-      })
-        .then((resp) => {
-          if (!resp.ok) {
-            throw new Error("Something fucked up with fetch response!");
-          }
-          return resp.json();
-        })
-        .then((data: CommentData) => {
-          setCommentsData(data);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
-  }, [postIdFromChild]);
-
-  const handleChildPostId = (id: string) => {
-    setPostIdFromChild(id);
-  };
-
-  return (
-    <div>
-      <Layout />
-      <ReturnBtn />
-      <Post displaRNavBtn={true} postIdToParent={handleChildPostId} />
-      <NewComment postId={postIdFromChild} />
-      {commentsData.length > 0 ? (
-        <Comment comments={commentsData} />
-      ) : (
-        <div className="text-center">
-          There is no comments yet to this post, be the first one!
-        </div>
-      )}
-      <LeftNavBtn link="./" useReturn={true} />
-    </div>
-  );
-}
-
-function NewComment({ postId }: any) {
+export default function NewComment({ postId }: any) {
   const [commentField, setCommentField] = useState<string>();
   const [saveResp, setSaveResp] = useState<string>();
 

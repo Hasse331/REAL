@@ -78,6 +78,6 @@ class Comment(Base):
 """ Comment.__table__.drop(engine)
 Comment.__table__.create(engine) """
 
-# Recreate the all tables:
+# Recreate all tables:
 """ Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine) """

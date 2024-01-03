@@ -1,31 +1,25 @@
-// @ts-nocheck
-// pages/UploadPage.js
 import "../app/styles/globals.css";
-import Layout from "../app/components/layout";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import React from "react";
-import ReturnBtn from "@/app/components/buttons/return-button";
+import ReturnBtn from "@/app/components/buttons/returnButton";
 import GetJwtToken from "@/app/utils/GetJwtToken";
 import useLoginCheck from "@/app/utils/useLoginCheck";
 
 const NewPost = () => {
   const [text, setText] = useState("");
-  const [file, setFile] = useState(null);
   const [responseMessage, setResponseMessage] = useState("");
-  const [responseStatus, setResponseStatus] = useState("");
 
-  const loggedIn = useLoginCheck();
-  const token = GetJwtToken(loggedIn);
+  const token = GetJwtToken(true);
   const router = useRouter();
 
   useEffect(() => {
     if (!token) {
       alert("Please login first");
-      router.push("/login?redirected=true");
+      router.push("/");
     }
-  }, [router, token]);
+  }, [token, router]);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -84,17 +78,16 @@ const NewPost = () => {
       if (result.message == "success") {
         setResponseMessage("Post uploaded succesfully!");
       } else {
-        setResponseStatus("error");
+        console.error("error occurred during fetch");
       }
     } catch (error) {
       setResponseMessage("An error occurred while updating profile.");
-      setResponseStatus("error");
+      console.error("error occurred during fetch");
     }
   }
 
   return (
     <div>
-      <Layout />
       <div className="ml-1">
         <ReturnBtn />
       </div>

@@ -1,4 +1,4 @@
-async function postFormData<T>(
+async function postRegFormData<T>(
   url: string,
   data: FormData,
   token: string | null
@@ -24,4 +24,4 @@ async function postFormData<T>(
   return await response.json();
 }
 
-export { postFormData };
+export { postRegFormData };

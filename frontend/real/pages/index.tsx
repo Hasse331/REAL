@@ -1,29 +1,27 @@
 import "../app/styles/globals.css";
-import Layout from "../app/components/layout";
-import Post from "../app/components/post";
-import InfiniteScroll from "../app/utils/infinite-scroll";
-import LeftNavBtn from "../app/components/buttons/nav-left";
+import Post from "../app/components/post/post";
 import React from "react";
 import { useState, useEffect } from "react";
 import useLoginCheck from "@/app/utils/useLoginCheck";
 import Link from "next/link";
 import GetJwtToken from "@/app/utils/GetJwtToken";
 
+type PostData = {
+  post_id: string;
+  user_id: string;
+  tags: Array<string>;
+  profile_name: string;
+  title: string;
+  text: string;
+  media_type: string;
+}[];
+
 function Home() {
+  // FETCHING OBJECT LIST OF USER POSTS:
   const [data, setData] = useState<PostData[] | null>(null);
   const loggedIn = useLoginCheck("noSet");
   const token = GetJwtToken(loggedIn);
-
-  type PostData = {
-    post_id: string;
-    user_id: string;
-    tags: Array<string>;
-    profile_name: string;
-    title: string;
-    text: string;
-    media_type: string;
-  }[];
-
+  // TASK: Make this to fetch more posts and continue the OL:
   useEffect(() => {
     const savedPosts = localStorage.getItem("posts");
     if (savedPosts) {
@@ -53,17 +51,21 @@ function Home() {
 
   return (
     <div>
-      <Layout />
-      <div className="flex justify-center mt-2 ">
-        {loggedIn && (
-          <Link href="./new-post">
-            <button className=" m-3">Make New Post!</button>
-          </Link>
-        )}
-      </div>
-      {data ? <Post displaRNavBtn={true} data={data} /> : "Loading..."}
+      <NewPostButton />
+      {data ? <Post displaNavButtons={true} data={data} /> : "Loading..."}
+    </div>
+  );
+}
 
-      <LeftNavBtn link="./contacts" useReturn={false} />
+function NewPostButton() {
+  const loggedIn = useLoginCheck("noSet");
+  return (
+    <div className="flex justify-center mt-2 ">
+      {loggedIn && (
+        <Link href="./newPost">
+          <button className=" m-3">Make New Post!</button>
+        </Link>
+      )}
     </div>
   );
 }

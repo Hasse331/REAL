@@ -4,7 +4,7 @@ start cmd /k "cd C:\Projects\REAL\backend\api && ..\real-env\Scripts\activate.ba
 
 timeout /t 5
 
-start cmd /k "cd C:\Projects\REAL\backend\api && ..\real-env\Scripts\activate.bat
+start cmd /k "cd C:\Projects\ChatAPI && npm run dev
 
 start cmd /k "cd C:\Projects\REAL\frontend\real && npm run dev"
 

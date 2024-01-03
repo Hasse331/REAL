@@ -7,6 +7,6 @@
   },
   "plugins": ["react"],
   "rules": {
-    // Any additional or custom rules here
+    "react/prop-types": "off"
   }
 }

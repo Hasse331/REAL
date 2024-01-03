@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Layout from "@/app/components/layout";
-import RightNavBtn from "../app/components/buttons/nav-right";
+import RightNavBtn from "../app/components/buttons/navRight";
 import { useRouter } from "next/router";
 import useSocketConnection from "@/app/utils/useSocketConnection";
 import Link from "next/link";
 import getUserUUID from "@/app/utils/getUserId";
-import ProfileIcon from "@/app/components/buttons/profile-icon";
+import ProfileIcon from "@/app/components/buttons/profileIcon";
 
 function ContactsPage() {
   const [contactsData, setContactsData] = useState<Contact[]>([]);
@@ -23,7 +22,12 @@ function ContactsPage() {
   }
 
   interface UsernamesDict {
-    [key: string]: string; // A dictionary where the key is a string (UUID) and the value is a string (username)
+    [key: string]: string; // A dictionary where the key is a string UUID and the value is a username
+  }
+
+  interface User {
+    user_id: string;
+    username: string;
   }
 
   useEffect(() => {
@@ -34,30 +38,26 @@ function ContactsPage() {
     }
 
     if (socket) {
-      socket.emit("fetch_contacts", myUserId); // Emit event with myUserId
+      // Request contacts data by myUserId:
+      socket.emit("fetch_contacts", myUserId);
 
+      // Receive contacts data and process it:
       socket.on("contacts_data", (contacts: Contact[]) => {
         setContactsData(contacts);
         setLoading(false);
 
-        // Process contacts to create idList
+        // Create idList for fetching usernames:
         const idList = contacts.flatMap((contact) => [
           contact.sender_id,
           contact.recipient_id,
         ]);
 
-        // Make sure idList is not empty
+        // Fetch usernames form user data backend by using the idList:
         if (idList.length > 0) {
           const profileNameEndpoint =
             process.env.NEXT_PUBLIC_GET_PROFILENAMES ||
             "INCORRECT_ENDPOINT: profileNameEndpoint";
 
-          interface User {
-            user_id: string; // Assuming user_id is a string representing UUID
-            username: string;
-          }
-
-          // Fetch request inside the socket event handler
           fetch(profileNameEndpoint, {
             method: "POST",
             headers: {
@@ -121,8 +121,7 @@ function ContactsPage() {
   };
   return (
     <div>
-      <Layout />
-      <RightNavBtn link="./" useReturn={false} />
+      <RightNavBtn link="./" useReturn={true} />
       <h1>Contacts</h1>
       {loading ? (
         <p>Loading contacts...</p>
@@ -138,6 +137,7 @@ function ContactsPage() {
               className="m-2 border border-violet-700 hover:bg-gray-900 bg-gray-800 rounded-md shadow shadow-black"
             >
               <div className="flex justify-between ml-1 mr-5 items-center">
+                {/* Profile icon and name */}
                 <div className="flex flex-grow m-2 items-center">
                   <ProfileIcon userId={otherUserId} />
                   {usernames && (
@@ -147,6 +147,7 @@ function ContactsPage() {
                   )}
                 </div>
 
+                {/* Accept / Refuse buttons: */}
                 {contact.recipient_id === myUserId && !contact.accepted ? (
                   <div>
                     <button
@@ -165,6 +166,7 @@ function ContactsPage() {
                   </div>
                 ) : (
                   <p className="text-sm">
+                    {/* Open and Pending buttons: */}
                     {usernames && (
                       <Link
                         href={`/chat?recipientId=${otherUserId}&contactAccepted=${contact.accepted}&profilename=${usernames[otherUserId]}`}
@@ -173,7 +175,7 @@ function ContactsPage() {
                         {contact.accepted ? (
                           <button className="m-2 text-sm ml-0">Open</button>
                         ) : (
-                          "Pending"
+                          <p>Pending</p>
                         )}
                       </Link>
                     )}

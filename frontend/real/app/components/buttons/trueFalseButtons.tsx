@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function PostButtons() {
+export default function TrueFalseButtons() {
   return (
     <div className="space-x-2 m-2 ml-0">
       <button className=" h-6 w-10 rounded-lg bg-violet-700 ml-0 p-1 mt-1  text-xs text-white">

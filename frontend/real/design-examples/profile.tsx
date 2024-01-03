@@ -1,8 +1,8 @@
 import "../app/styles/globals.css";
-import Layout from "../app/components/layout";
-import LeftNavBtn from "../app/components/buttons/nav-left";
+import Layout from "../app/components/navbar";
+import LeftNavBtn from "../app/components/buttons/navLeft";
 import Image from "next/image";
-import Post from "../app/components/post";
+import Post from "../app/components/post/post";
 
 export default function Profile() {
   return (

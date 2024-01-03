@@ -1,14 +1,11 @@
 import React from "react";
-import PostButtons from "./buttons/post-btns";
-import ProfileIcon from "./buttons/profile-icon";
+import PostButtons from "../buttons/trueFalseButtons";
+import ProfileIcon from "../buttons/profileIcon";
 
 type CommentData = {
   comment: string;
   profile_name: string;
   user_id: string;
-  // Uncomment the following line when score or priority is implemented
-  // score?: number;
-  // priority?: number;
 };
 
 type CommentProps = {

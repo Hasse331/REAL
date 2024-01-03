@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import Post from "../../app/components/post";
+import Post from "../../app/components/post/post";
 import useLoginCheck from "../../app/utils/useLoginCheck";
 import "@testing-library/jest-dom";
 

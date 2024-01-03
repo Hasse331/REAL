@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 import registration
 import pydantic_models as pyd
-from models import Profile, Post, User, Comment, SessionLocal
+from models import Profile, Post, Comment, SessionLocal
 import login_logic
 from media import load_media, save_media
 from jwt_auth import jwt_authentication

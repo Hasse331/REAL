@@ -1,7 +1,7 @@
 import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
-import LeftNavBtn from "../../app/components/buttons/nav-left";
-import RightNavBtn from "../../app/components/buttons/nav-right";
+import LeftNavBtn from "../../app/components/buttons/navLeft";
+import RightNavBtn from "../../app/components/buttons/navRight";
 import "@testing-library/jest-dom";
 
 type childrendProp = {

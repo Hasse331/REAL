@@ -1,12 +1,11 @@
 // @ts-nocheck
 // pages/UploadPage.js
 import "../app/styles/globals.css";
-import Layout from "../app/components/layout";
 import React, { useState } from "react";
-import ReturnBtn from "@/app/components/buttons/return-button";
+import ReturnBtn from "@/app/components/buttons/returnButton";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { postFormData } from "@/app/utils/api";
+import { postRegFormData } from "@/app/utils/postRegisterData";
 import GetJwtToken from "@/app/utils/GetJwtToken";
 import useLoginCheck from "@/app/utils/useLoginCheck";
 
@@ -19,7 +18,6 @@ function EditProfile() {
   const [title, setTitle] = useState(profileData.title);
   const [text, setText] = useState(profileData.text);
   const [url, setUrl] = useState(profileData.url);
-  const [file, setFile] = useState(null);
 
   const loggedIn = useLoginCheck();
   const token = GetJwtToken(loggedIn);
@@ -44,7 +42,7 @@ function EditProfile() {
     }
 
     try {
-      const data = await postFormData<RegisterResponse>(
+      const data = await postRegFormData<RegisterResponse>(
         apiEndpoint,
         formData,
         token
@@ -64,7 +62,6 @@ function EditProfile() {
 
   return (
     <div>
-      <Layout />
       <div className="ml-1">
         <ReturnBtn />
       </div>

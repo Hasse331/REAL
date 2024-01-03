@@ -1,11 +1,10 @@
 // @ts-nocheck
 
 import "../app/styles/globals.css";
-import Layout from "../app/components/layout";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import ReturnBtn from "@/app/components/buttons/return-button";
-import { postFormData } from "@/app/utils/api";
+import ReturnBtn from "@/app/components/buttons/returnButton";
+import { postRegFormData } from "@/app/utils/postRegisterData";
 import GetJwtToken from "@/app/utils/GetJwtToken";
 import useLoginCheck from "@/app/utils/useLoginCheck";
 import { useEffect } from "react";
@@ -43,7 +42,7 @@ function Register() {
     }
 
     try {
-      const data = await postFormData<RegisterResponse>(
+      const data = await postRegFormData<RegisterResponse>(
         apiEndpoint,
         formData,
         token
@@ -63,7 +62,6 @@ function Register() {
 
   return (
     <div>
-      <Layout />
       <div className="ml-1">
         <ReturnBtn />
       </div>

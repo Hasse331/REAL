@@ -11,8 +11,6 @@ function useLoginCheck(): [
 function useLoginCheck(
   noSet?: string
 ): boolean | [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
-  // Your implementation logic here
-
   const [loggedIn, setLoggedIn] = useState(false);
   useEffect(() => {
     if (typeof window !== "undefined" && window.sessionStorage) {
