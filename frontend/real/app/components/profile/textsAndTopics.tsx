@@ -6,9 +6,7 @@ export default function TextsAndTopics({ data, loading }) {
     <div>
       <div className="flex">
         <p>Interests:</p>
-        <div className="m-2.5">
-          <TopicIcons />
-        </div>
+        <div className="m-2.5">{/* <TopicIcons /> */}</div>
       </div>
       <br />
       <div>

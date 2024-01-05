@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import getUserUUID from "@/app/utils/getUserId";
 import { useRouter } from "next/router";
 
@@ -20,6 +20,31 @@ export default function SendMessage({
   const contactAcceptedStr = router.query.contactAccepted as string;
   const contactAccepted = contactAcceptedStr === "true";
 
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (textAreaRef.current) {
+      textAreaRef.current.focus();
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleEnterKey = (event: KeyboardEvent) => {
+      if (
+        submitButtonRef.current &&
+        event.key === "Enter" &&
+        document.activeElement === textAreaRef.current
+      ) {
+        submitButtonRef.current.click();
+      }
+    };
+    document.addEventListener("keydown", handleEnterKey);
+    return () => {
+      document.removeEventListener("keydown", handleEnterKey);
+    };
+  });
+
   const sendMessage = () => {
     if (socket && message.trim() && userId) {
       const newMessage: Message = {
@@ -28,7 +53,7 @@ export default function SendMessage({
         message: message,
       };
       socket.emit("send_message", newMessage);
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setMessages((prevMessages: string[]) => [...prevMessages, newMessage]);
       setMessage("");
     }
   };
@@ -41,6 +66,7 @@ export default function SendMessage({
           <h2 className="mb-0">Chat with: {username}</h2>
 
           <textarea
+            ref={textAreaRef}
             value={message}
             rows={2}
             cols={70}
@@ -50,7 +76,11 @@ export default function SendMessage({
           />
 
           <div className="text-right">
-            <button onClick={sendMessage} className=" mb-10">
+            <button
+              ref={submitButtonRef}
+              onClick={sendMessage}
+              className=" mb-10"
+            >
               Send
             </button>
           </div>

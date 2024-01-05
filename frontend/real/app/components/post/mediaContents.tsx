@@ -27,7 +27,7 @@ export default function MediaContents({ data, key, elementRef }) {
       {data?.media_type === "image" ? (
         <Image
           data-testid="image"
-          className="mt-2 rounded border border-solid border-violet-700 shadow shadow-black"
+          className="mt-0 rounded border border-solid border-violet-700 shadow shadow-black"
           src={mediaSrc}
           alt={data.media_type}
           width={600}
@@ -38,7 +38,7 @@ export default function MediaContents({ data, key, elementRef }) {
           ref={videoRef}
           onLoadedMetadata={setVolume}
           data-testid="video"
-          className=""
+          className="mt-0"
           src={mediaSrc}
           width={600}
           height={600}
