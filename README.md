@@ -7,7 +7,7 @@ This project is using:
 TypeScript, Python, next.js, tailwindCSS, FastAPI, AWS RDS for postgre database & S3 for images. Jest has been used for frontend testing and there is dockerfiles and docker-compose files configured and used for running the application time to time in profuction-like environment.
 
 # Photos:
-All the features in images are 100% working and complited.
+All the features in images are 100% working and completed.
 ## Main application:
 Main UI of the web application. Using AWS RDS and S3 with FastAPI backend with ORM and postgreSQL.
 
