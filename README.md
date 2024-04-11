@@ -10,19 +10,19 @@ TypeScript, Python, next.js, tailwindCSS, FastAPI, AWS RDS for postgre database 
 ## Main application:
 Main UI of the web application:
 
-![Alt text]([IMAGE_URL](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/real.png?raw=true))
-![Alt text]([IMAGE_URL](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/real2.png?raw=true))
-![Alt text]([IMAGE_URL](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/real3.png?raw=true))
-![Alt text]([IMAGE_URL](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/real4.png?raw=true))
-![Alt text]([IMAGE_URL](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/real5.png?raw=true))
+![Alt text](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/real.png?raw=true))
+![Alt text](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/real2.png?raw=true))
+![Alt text](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/real3.png?raw=true))
+![Alt text](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/real4.png?raw=true))
+![Alt text](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/real5.png?raw=true))
 
 ## Chat features
 Made with node.js backend using socket.io
 
 ![Alt text](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/chatapi1.png?raw=true)
-![Alt text]([IMAGE_URL](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/chatapi2.png?raw=true))
-![Alt text]([IMAGE_URL](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/chatapi3.png?raw=true))
-![Alt text]([IMAGE_URL](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/chatapi4.png?raw=true))
-![Alt text]([IMAGE_URL](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/chatapi5.png?raw=true))
+![Alt text](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/chatapi2.png?raw=true))
+![Alt text](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/chatapi3.png?raw=true))
+![Alt text](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/chatapi4.png?raw=true))
+![Alt text](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/chatapi5.png?raw=true))
 
 
