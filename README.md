@@ -9,7 +9,7 @@ TypeScript, Python, next.js, tailwindCSS, FastAPI, AWS RDS for postgre database 
 # Photos:
 All the features in images are 100% working and completed.
 ## Main application:
-Main UI of the web application. Using AWS RDS and S3 with FastAPI backend with ORM and postgreSQL.
+Main UI of the web application. Using Typescript, TailwindCSS, next.js. Backend using AWS RDS and S3 with FastAPI backend with ORM and postgreSQL.
 
 ![Alt text](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/real.png?raw=true))
 ![Alt text](https://github.com/Hasse331/personal_websites_v2/blob/main/personal-websites-v2/public/portfolioKuvat/REAL/real2.png?raw=true))
