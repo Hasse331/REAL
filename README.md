@@ -1,6 +1,6 @@
 # REAL™ Social Media Platform
 
-This projects is 100% made by me so far. There would be still very much to do, especially refactoring, security improvements, optimizations, finishing some features and much more. Anyways, I'm not continuing this project anymore, since I have plans to make REAL v2 with new UI/UX design and technical spesifications by using flutter, go and firebase.
+This projects is 100% made by me so far. There would be still very much to do, especially refactoring, security improvements, optimizations, finishing some features and much more. Anyways, I'm not continuing this project anymore.
 
 This project is using: 
 
